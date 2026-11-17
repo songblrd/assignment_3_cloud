@@ -1,0 +1,11 @@
+#Development profile settings/configs 
+warehouse:
+  location: Northfield Distribution Warehouse (Development)
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/inventory_db
+    username: postgres
+    password: password
+  jpa:
+    show-sql: true
