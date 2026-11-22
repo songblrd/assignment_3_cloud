@@ -1,6 +1,7 @@
 package com.example.productservice.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity // marks this as a jpa entity mapped to database table
 @Table(name = "products") // this sets the table in postgresql with the set name.
@@ -17,8 +18,8 @@ public class Product {
     @Column(nullable = false) // nullable false sets it as not being able to be null. basically says this cant be null.
     private String category;
 
-    @Column(nullable = false)
-    private Double price;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @Column(nullable = false)
     private Integer stockQuantity;
@@ -27,7 +28,7 @@ public class Product {
 
     } // jpa needs an empty constructor when it reads rows from the database
 
-    public Product(String name, String category, Double price, Integer stockQuantity) {
+    public Product(String name, String category, BigDecimal price, Integer stockQuantity) {
         this.name = name;
         this.category =  category;
         this.price = price;
@@ -60,11 +61,11 @@ public class Product {
         this.category = category;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

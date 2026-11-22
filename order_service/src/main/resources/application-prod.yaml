@@ -1,0 +1,11 @@
+# Production Profile settings/configs
+warehouse:
+  location: Northfield Distribution Warehouse (Production)
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://postgres:5432/inventory_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    show-sql: false

@@ -1,5 +1,7 @@
 package com.example.productservice.dto;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +21,7 @@ public record ProductRequest(
 
     @NotNull(message = "Price cannot be empty") // ensures that it isnt null
     @Positive(message = "Price must be greater than 0")
-    Double price,
+    BigDecimal price,
 
     @NotNull(message = "Stock Quantity cannot be empty")
     @Positive(message = "Stock quantity cannot be zero") // this ensures that 0 on this field is not allowed, as it will take a missing value as valid
