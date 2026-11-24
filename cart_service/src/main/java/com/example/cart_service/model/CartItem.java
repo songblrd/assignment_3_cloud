@@ -1,5 +1,6 @@
 package com.example.cart_service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity 
@@ -10,6 +11,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
+    @JsonIgnore // stops an endless JSON loop: Cart -> items -> cart -> items ...
     @ManyToOne 
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;

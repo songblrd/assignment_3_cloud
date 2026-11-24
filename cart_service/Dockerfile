@@ -1,25 +1,14 @@
-# build app using maven
-FROM eclipse-temurin:21-jdk AS build
+# Stage 1: build the jar with Maven (no local JDK or Maven needed)
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+RUN mvn -q dependency:go-offline
+COPY src ./src
+RUN mvn -q clean package -DskipTests
 
-# copy wrapper and pom.xml to cache dependencies
-COPY .mvn/ .mvn
-COPY mvnw mvnw.cmd pom.xml ./
-RUN ./mvnw dependency:go-offline
-
-# build jar file then copy src code
-COPY src/ src/
-RUN ./mvnw clean package -DskipTests
-
-# run app using jre
+# Stage 2: run the jar on a small Java runtime image
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-
-# copy built jar
 COPY --from=build /app/target/*.jar app.jar
-
-# expose port 8081
-EXPOSE 8081
-
-#run springboot app
+EXPOSE 8083
 ENTRYPOINT ["java", "-jar", "app.jar"]

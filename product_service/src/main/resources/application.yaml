@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: inventory-management-service
+    name: product-service
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,9 +14,9 @@ spring:
   profiles:
     active: dev
   
-warehouse:
-  name: Northfield Distribution Warehouse
-  location: Waterloo Fulfillment Center
+app:
+  cors:
+    allowed-origin: http://localhost:3000
 
 management:
   endpoints:
@@ -29,6 +29,6 @@ management:
 
 info:
   app:
-    name: Inventory Management Service
+    name: Product Service
     version: 1.0.0
     author: Marianne Moyo

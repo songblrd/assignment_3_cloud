@@ -2,10 +2,14 @@ package com.example.cart_service.controller;
 
 import com.example.cart_service.model.Cart;
 import com.example.cart_service.dto.AddCartItemRequest;
+import com.example.cart_service.dto.OrderResponse;
 import com.example.cart_service.service.CartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
+
+import java.util.List;
 
 // Entry point for http requests
 
@@ -38,7 +42,7 @@ public class CartController {
     @PostMapping("/{id}/items") 
     public ResponseEntity<Cart> addItem(
             @PathVariable Long id,
-            @RequestBody AddCartItemRequest request) {
+            @Valid @RequestBody AddCartItemRequest request) {
 
         return cartService.addItem(id, request)
             .map(cart -> ResponseEntity.status(HttpStatus.CREATED).body(cart))
@@ -60,10 +64,11 @@ public class CartController {
     }
 
     // this starts checkout for all items in the cart
-    @PostMapping("/{id}/checkout") // this starts checkout for all items in the cart
-    public ResponseEntity<Cart> checkout(@PathVariable Long id) {
+    // returns 201 with the created orders, 400 if the cart is empty, 409 if stock is short, 404 if no cart
+    @PostMapping("/{id}/checkout")
+    public ResponseEntity<List<OrderResponse>> checkout(@PathVariable Long id) {
         return cartService.checkout(id)
-            .map(ResponseEntity::ok)
+            .map(orders -> ResponseEntity.status(HttpStatus.CREATED).body(orders))
             .orElse(ResponseEntity.notFound().build());
     }
 

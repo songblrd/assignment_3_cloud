@@ -1,6 +1,10 @@
 package com.example.cart_service.service;
 
+import com.example.cart_service.client.OrderClient;
 import com.example.cart_service.dto.AddCartItemRequest;
+import com.example.cart_service.dto.OrderLineRequest;
+import com.example.cart_service.dto.OrderResponse;
+import com.example.cart_service.exception.BadRequestException;
 import com.example.cart_service.model.Cart;
 import com.example.cart_service.model.CartItem;
 import com.example.cart_service.repository.CartRepository;
@@ -8,6 +12,7 @@ import com.example.cart_service.repository.CartItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 //Service that implements cart service interface and logic
@@ -17,11 +22,13 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final OrderClient orderClient;
 
-    // constructor injection: the repositories get passed in by Spring
-    public CartServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository) {
+    // constructor injection: the repositories and the order-service client get passed in by Spring
+    public CartServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository, OrderClient orderClient) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
+        this.orderClient = orderClient;
     }
 
     @Override
@@ -45,6 +52,15 @@ public class CartServiceImpl implements CartService {
 
             if (existingCart.getItems() == null) {
                 existingCart.setItems(new ArrayList<>());
+            }
+
+            // if this product is already in the cart, add to that line instead of making a second one
+            // (the schema allows one line per product per cart)
+            for (CartItem item : existingCart.getItems()) {
+                if (item.getProductId().equals(request.productId())) {
+                    item.setQuantity(item.getQuantity() + request.quantity());
+                    return cartRepository.save(existingCart);
+                }
             }
 
             CartItem newItem = new CartItem(
@@ -83,12 +99,34 @@ public class CartServiceImpl implements CartService {
         return true;
     }
 
-    ///NOTE checkout will be added when connecting to order-service. This is a placeholder
     @Override
-    public Optional<Cart> checkout(Long id) {
+    // sends every line in the cart to order-service; only marks the cart CHECKED_OUT if the orders were created
+    // if the cart does not exist, returns an empty optional (404)
+    public Optional<List<OrderResponse>> checkout(Long id) {
         return cartRepository.findById(id).map(cart -> {
+
+            if ("CHECKED_OUT".equals(cart.getStatus())) {
+                throw new BadRequestException("This cart has already been checked out.");
+            }
+
+            if (cart.getItems() == null || cart.getItems().isEmpty()) {
+                throw new BadRequestException("Your cart is empty.");
+            }
+
+            // turn the cart lines into the {productId, quantity} list that order-service expects
+            List<OrderLineRequest> lines = new ArrayList<>();
+            for (CartItem item : cart.getItems()) {
+                lines.add(new OrderLineRequest(item.getProductId(), item.getQuantity()));
+            }
+
+            // order-service checks products and reserves stock; a 409 or 400 throws here,
+            // so the cart is NOT marked checked out when an order fails
+            List<OrderResponse> orders = orderClient.createOrders(lines);
+
             cart.setStatus("CHECKED_OUT");
-            return cartRepository.save(cart);
+            cartRepository.save(cart);
+
+            return orders;
         });
     }
 
