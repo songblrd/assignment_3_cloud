@@ -25,6 +25,8 @@ public record ProductRequest(
 
     @NotNull(message = "Stock Quantity cannot be empty")
     @Positive(message = "Stock quantity cannot be zero") // this ensures that 0 on this field is not allowed, as it will take a missing value as valid
-    Integer stockQuantity
+    Integer stockQuantity,
     // this is integer instead of int because wrapper types can be null, so both not null and positive can catch a missing value. int would not.
+
+    String imageUrl
 ) {}

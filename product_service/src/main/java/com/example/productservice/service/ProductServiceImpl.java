@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     // converts the Data Transfer Object into a Product entity, then inserts it into the database and returns it with its new generated id
     public Product createProduct(ProductRequest request){
-        Product newProduct = new Product(request.name(), request.category(), request.price(), request.stockQuantity());
+        Product newProduct = new Product(request.name(), request.category(), request.price(), request.stockQuantity(), request.imageUrl());
         return productRepository.save(newProduct);
     }
 
@@ -58,6 +58,7 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setCategory(request.category());
             existingProduct.setPrice(request.price());
             existingProduct.setStockQuantity(request.stockQuantity());
+            existingProduct.setImageUrl(request.imageUrl());
             return productRepository.save(existingProduct);
         });
     }

@@ -8,7 +8,8 @@ CREATE TABLE products (
     name      VARCHAR(255)   NOT NULL,
     category  VARCHAR(255)   NOT NULL,
     price     NUMERIC(10, 2) NOT NULL,
-    stockQuantity INTEGER        NOT NULL
+    stock_quantity INTEGER        NOT NULL,
+    image_Url VARCHAR(255)
     
 );
 
@@ -36,5 +37,5 @@ CREATE TABLE orders (
     product_id BIGINT         NOT NULL,
     quantity   INTEGER        NOT NULL,
     total_price NUMERIC(10, 2) NOT NULL,
-    status     VARCHAR(50)    NOT NULL,
-)
+    status     VARCHAR(50)    NOT NULL
+);

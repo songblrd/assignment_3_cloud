@@ -24,15 +24,19 @@ public class Product {
     @Column(nullable = false)
     private Integer stockQuantity;
 
+    @Column
+    private String imageUrl;
+
     public Product() {
 
     } // jpa needs an empty constructor when it reads rows from the database
 
-    public Product(String name, String category, BigDecimal price, Integer stockQuantity) {
+    public Product(String name, String category, BigDecimal price, Integer stockQuantity, String imageUrl) {
         this.name = name;
         this.category =  category;
         this.price = price;
         this.stockQuantity = stockQuantity;
+        this.imageUrl = imageUrl;
     }
 
     // getters and setters needed by jpa and by jackson to convert to json
@@ -75,6 +79,14 @@ public class Product {
 
     public void setStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl){
+        this.imageUrl = imageUrl;
     }
 
 }

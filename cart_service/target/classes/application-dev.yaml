@@ -1,0 +1,9 @@
+#Development profile settings/configs 
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/cart_db
+    username: postgres
+    password: password
+  jpa:
+    show-sql: true
