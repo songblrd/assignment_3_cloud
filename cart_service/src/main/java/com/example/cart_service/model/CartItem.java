@@ -11,7 +11,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
-    @JsonIgnore // stops an endless JSON loop: Cart -> items -> cart -> items ...
+    @JsonIgnore // stops an endless loop bug
     @ManyToOne 
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
