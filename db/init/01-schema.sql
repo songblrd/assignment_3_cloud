@@ -17,7 +17,18 @@ CREATE TABLE products (
 
 
 -- === Cart Service (owner:) ===
+CREATE TABLE carts (
+    id     BIGSERIAL PRIMARY KEY,
+    status VARCHAR(50) NOT NULL
+);
 
+CREATE TABLE cart_items (
+    id         BIGSERIAL PRIMARY KEY,
+    cart_id    BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity   INTEGER NOT NULL,
+    FOREIGN KEY (cart_id) REFERENCES carts(id)
+);
 
 -- === Order Service (owner: Marianne's A3) ===
 CREATE TABLE orders (
