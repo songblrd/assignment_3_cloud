@@ -83,6 +83,7 @@ public class CartServiceImpl implements CartService {
         return true;
     }
 
+    ///NOTE checkout will be added when connecting to order-service. This is a placeholder
     @Override
     public Optional<Cart> checkout(Long id) {
         return cartRepository.findById(id).map(cart -> {
