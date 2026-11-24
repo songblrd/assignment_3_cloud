@@ -14,7 +14,11 @@ CREATE TABLE products (
 );
 
 -- === Inventory Service (owner:) ===
-
+CREATE TABLE inventory (
+    id          BIGSERIAL PRIMARY KEY,
+    product_id  BIGINT  NOT NULL UNIQUE,
+    available   INTEGER NOT NULL
+);
 
 
 -- === Cart Service (owner:) ===
