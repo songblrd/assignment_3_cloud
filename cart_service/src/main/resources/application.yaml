@@ -1,0 +1,40 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: order-service
+  jpa:
+    hibernate:
+      ddl-auto: update 
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  profiles:
+    active: dev
+
+app:
+  cors:
+    allowed-origin: http://localhost:3000
+
+services:
+  product:
+    url: http://localhost:8080
+  inventory:
+    url: http://localhost:8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Cart Management Service
+    version: 1.0.0
+    author: Aaron Sieunarine
